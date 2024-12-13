@@ -3,12 +3,16 @@ name: 'dbtDatabricksWorkflowCookbook'
 config-version: 2
 version: '0.1'
 
-profile: 'dbt_system_tables_mart'
+profile: 'databricks_target'
 
 vars:
-    s3_source_bucket: 'mybucket'
-    dbt_volume_base_path: '/Volumes/dbt_artifacts/dbt_system_tables_mart'
-
+    DBT_CUSTOMER: 'default'
+    # DBT_CUSTOMER: "{{ env_var('DBT_CUSTOMER') }}"
+    # s3_source_bucket: 'mybucket'
+    # dbt_volume_base_path: '/Volumes/dbt_artifacts/dbt_system_tables_mart'
+    catalog: default
+    schema: default
+    warehouse_path: default
 
 model-paths: ["models"]
 seed-paths: ["seeds"]
@@ -28,11 +32,18 @@ models:
   dbtDatabricksWorkflowCookbook:
     base:
       +materialized: view
+      # +grants:
+      #   modify: ['example@databricks.com']
     core:
       +materialized: table
+      # +databricks_compute: "Compute1"
       +tblproperties: {'delta.feature.allowColumnDefaults': 'supported', 'delta.columnMapping.mode' : 'name', 'delta.enableDeletionVectors': 'true'}
+      # +grants:  # In this case the + is not optional, you must include it for your project to parse.
+      #   modify: ['example@databricks.com']
     mart:
       +materialized: table
+      # +databricks_compute: "Compute1"
+
 
 # Optional for logging dbt run info to Delta tables
 # on-run-end: "{{ dbt_artifacts.upload_results(results) }}"

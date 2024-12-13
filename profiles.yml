@@ -1,29 +1,67 @@
-dbt_system_tables_mart:
-  target: local
+databricks_target:
+  target: databricks_cluster
   outputs:
     #    #run DBT locally from your IDE and execute on a SQL warehouse (https://docs.getdbt.com/reference/warehouse-setups/databricks-setup)
     #    #Make sure you have pip install dbt-databricks in your local env
     #    #Run the project locally with:
     #    #DBT_DATABRICKS_HOST=xxx.cloud.databricks.com  DBT_DATABRICKS_HTTP_PATH=/sql/1.0/warehouses/xxxx DBT_DATABRICKS_TOKEN=dapixxxx dbt run
-    local:
+    prd:
       type: databricks
       catalog: main
-      schema: "{{ env_var('DBT_DATABRICKS_SCHEMA') }}"
-      host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
-      http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}" #SQL warehouse Connection details
-      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}" # Personal Access Token (PAT)
+      schema: "dustinvannoy_dev3"
+      host: "{{ var('DATABRICKS_HOST') }}"
+      http_path: "/sql/1.0/warehouses/475b94ddc7cd5211" #"{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}" #SQL warehouse Connection details
+      token: "{{ env_var('DBT_ACCESS_TOKEN') }}"
+      #token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}" # Personal Access Token (PAT)
       # auth_type: oauth
-      threads: 3
+      # threads: 3
+      retry_all: true
+      connect_timeout: 5
+      connect_retries: 2
 
-    staging:
+    databricks_cluster:
       type: databricks
       catalog: main
-      schema: dbt_system_tables
-      host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
-      http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}" #SQL warehouse Connection details
-      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}" # Personal Access Token (PAT)
-      # auth_type: oauth
-      threads: 3
+      schema: dustinvannoy_dev
+      host: "https://e2-dogfood.staging.cloud.databricks.com/"
+      http_path: "/sql/1.0/warehouses/dd43ee29fedd958d"  
+      token: "{{ env_var('DBT_ACCESS_TOKEN') }}" # Personal Access Token
+
+
+    # databricks_cluster:
+    #   type: databricks
+    #   catalog: "{{ var('catalog') }}" #main
+    #   schema: "{{ var('schema') }}"  #"{{ env_var('DBT_DATABRICKS_SCHEMA') }}"
+    #   host: "{{ var('DATABRICKS_HOST') }}"
+    #   http_path: "{{ var('warehouse_path') }}" #"/sql/1.0/warehouses/dd43ee29fedd958d"  
+    #   token: "{{ env_var('DBT_ACCESS_TOKEN') }}" # Personal Access Token
+
+    # local:
+    #   type: databricks
+    #   catalog: main
+    #   schema: dustinvannoy_dev5  #"{{ env_var('DBT_DATABRICKS_SCHEMA') }}"
+    #   # host: "{{ var('DATABRICKS_HOST') }}"
+    #   # http_path: "/sql/1.0/warehouses/58c51c30900fe953" #SQL warehouse Connection details
+    #   http_path: "/sql/1.0/warehouses/dd43ee29fedd958d"  #669300f0124d7644" #SQL warehouse Connection details
+    #   # compute:
+    #     # Compute1:
+    #     #   http_path: '/sql/1.0/warehouses/58c51c30900fe953' # Required of each alternate compute
+    #   token: "{{ env_var('DBT_ACCESS_TOKEN') }}" # Personal Access Token (PAT)
+    #   # auth_type: oauth
+    #   threads: 10
+    #   retry_all: true
+    #   connect_timeout: 5
+    #   connect_retries: 2
+
+#     staging:
+#       type: databricks
+#       catalog: main
+#       schema: dbt_system_tables
+#       host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
+#       http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}" #SQL warehouse Connection details
+#       token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}" # Personal Access Token (PAT)
+#       # auth_type: oauth
+#       threads: 3
 
 
 

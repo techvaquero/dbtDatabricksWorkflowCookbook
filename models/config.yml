@@ -12,6 +12,13 @@ sources:
   - name: system_billing
     database: system
     schema: billing
+    config:
+      enabled: true
     tables:
       - name: usage
       - name: list_prices
+  - name: audits
+    database: system
+    schema: access
+    tables:
+      - name: audit
